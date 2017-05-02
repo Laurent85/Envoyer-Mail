@@ -6,9 +6,9 @@ using System.IO;
 
 namespace Envoyer_un_mail
 {
-    public partial class Form1 : Form
+    public partial class Principal : Form
     {
-        public Form1()
+        public Principal()
         {
             InitializeComponent();            
         }
@@ -17,6 +17,7 @@ namespace Envoyer_un_mail
         {
             Objet.Text = " ";
             Message.Text = " ";
+            Adresses1.Liste = "";
         }
 
         private void Envoyer_Click(object sender, EventArgs e)
@@ -60,8 +61,11 @@ namespace Envoyer_un_mail
 
         private void frm2_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Adresses1.Liste = Adresses1.Liste.Remove(Adresses1.Liste.Length - 1);
-            Destinataire.Text = Adresses1.Liste;                       
+            if (Adresses1.Liste != "")
+            {
+                Adresses1.Liste = Adresses1.Liste.Remove(Adresses1.Liste.Length - 1);
+                Destinataire.Text = Adresses1.Liste;
+            }                      
         }
 
         private void Parcourir_Click(object sender, EventArgs e)
