@@ -14,21 +14,17 @@ namespace Envoyer_un_mail
     {
         public Adresses1()
         {
-            InitializeComponent();
-            Form1 form1 = new Form1();
-            form1.Text = form1.Destinataire.Text;
-            
+            InitializeComponent();           
         }
 
-        //private Form1 form1;
-
+        public static string Liste;
         private void Adresses_Load(object sender, EventArgs e)
         {
             int counter = 0;
             string line;
 
             // Read the file and display it line by line.
-            System.IO.StreamReader file = new System.IO.StreamReader(@"C:\Test.txt");
+            System.IO.StreamReader file = new System.IO.StreamReader(@"\\serveur2008\laurent$\logiciels\mail\adresses.txt");
 
             //Now read the file line by line
             while ((line = file.ReadLine()) != null)
@@ -52,28 +48,21 @@ namespace Envoyer_un_mail
 
                 if (checkedListBox1.GetItemChecked(i))
                 {
-                    //coché
-                    //checkedListBox1.Items[i].ToString();
+                    //coché                    
                     Liste_adresses.Text = Liste_adresses.Text + checkedListBox1.Items[i].ToString() + ";";
                 }
                 else
                 {
-                    //non coché
-                    //checkedListBox1.Items[i].ToString();
+                    //non coché                    
                 }                
             }
         }
 
         private void button_valider_Click(object sender, EventArgs e)
-        {
-
-
-            Form1 form1 = new Form1();
-            
-            form1.Destinataire.Text = Liste_adresses.Text;
-            form1.MyrefeshMethod();
-            form1.Show();
+        {            
+            Liste = Liste_adresses.Text;            
+            this.Close();                     
         }
-        
+      
     }
 }

@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net.Mail;
+using System.IO;
 
 namespace Envoyer_un_mail
 {
@@ -15,17 +10,13 @@ namespace Envoyer_un_mail
     {
         public Form1()
         {
-            InitializeComponent();
+            InitializeComponent();            
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
-        }
-
-        public void MyrefeshMethod()
-        {
-            MessageBox.Show("refreshed");
+            Objet.Text = " ";
+            Message.Text = " ";
         }
 
         private void Envoyer_Click(object sender, EventArgs e)
@@ -40,23 +31,66 @@ namespace Envoyer_un_mail
             client.Credentials = new System.Net.NetworkCredential("laurent_manceau@orange.fr", "Lothlu85");
 
             MailMessage mail = new MailMessage();
-            mail.From = new MailAddress(Expéditeur.Text, Expéditeur.Text, Encoding.UTF8);
+            mail.From = new MailAddress("prof@clg-stjacques.fr", Expéditeur.Text, Encoding.UTF8);
 
-            mail.To.Add(new MailAddress(Destinataire.Text));
+            string[] toAddressArray;
+            toAddressArray = Destinataire.Text.ToString().Split(new char[] { ';' });
+            foreach (string a in toAddressArray)
+            {
+                mail.To.Add(new MailAddress(a));
+            }
+
             mail.Subject = Objet.Text;
             mail.Body = Message.Text;
             mail.BodyEncoding = UTF8Encoding.UTF8;
             mail.DeliveryNotificationOptions = DeliveryNotificationOptions.OnFailure;
-            
+            Attachment attachment;
+            attachment = new Attachment(pj.Text.ToString());
+            mail.Attachments.Add(attachment);
             client.Send(mail);
         }
+       
 
         private void Adresses_Click(object sender, EventArgs e)
         {
-            Adresses1 Adresses2 = new Adresses1();
-            Adresses2.Show();
-            
+            Adresses1 frm2 = new Adresses1();
+            frm2.FormClosed += new FormClosedEventHandler(frm2_FormClosed);
+            frm2.Show();
         }
 
+        private void frm2_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Adresses1.Liste = Adresses1.Liste.Remove(Adresses1.Liste.Length - 1);
+            Destinataire.Text = Adresses1.Liste;                       
+        }
+
+        private void Parcourir_Click(object sender, EventArgs e)
+        {
+            Stream myStream = null;
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+
+            openFileDialog1.InitialDirectory = "c:\\";
+            openFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+            openFileDialog1.FilterIndex = 2;
+            openFileDialog1.RestoreDirectory = true;
+
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    if ((myStream = openFileDialog1.OpenFile()) != null)
+                    {
+                        using (myStream)
+                        {
+                            pj.Text = openFileDialog1.FileName;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);
+                }
+            }
+        }
     }
 }
